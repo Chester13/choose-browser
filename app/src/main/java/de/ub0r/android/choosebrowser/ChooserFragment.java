@@ -4,12 +4,10 @@ import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -22,10 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
 
 import java.util.List;
 
@@ -36,8 +32,6 @@ public class ChooserFragment extends AppCompatDialogFragment {
     private static final String TAG = "ChooserFragment";
     private static final String EXTRA_URI = "uri";
     private static final String EXTRA_SHOW_AS_DIALOG = "showAsDialog";
-
-    private CheckedTextView mRememberPreference;
 
     static ChooserFragment newInstance(@NonNull final Uri uri, final boolean showAsDialog) {
         ChooserFragment f = new ChooserFragment();
@@ -81,20 +75,6 @@ public class ChooserFragment extends AppCompatDialogFragment {
         finish();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_settings:
-                startActivity(new Intent(getContext(), SettingsActivity.class));
-                return true;
-            case R.id.menu_preferred_apps:
-                startActivity(new Intent(getContext(), PreferredAppsActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void finish() {
         final FragmentActivity activity = getActivity();
         if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
@@ -135,22 +115,10 @@ public class ChooserFragment extends AppCompatDialogFragment {
         setSubtitle(uri.toString());
 
         final List<ResolveInfo> browsers = listBrowsers(uri);
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        mRememberPreference = container.findViewById(R.id.remember_preference);
-        mRememberPreference.setChecked(prefs.getBoolean(SettingsActivity.PREF_NAME_REMEMBER_BY_DEFAULT, SettingsActivity.PREF_DEFAULT_REMEMBER_BY_DEFAULT));
-        mRememberPreference.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                mRememberPreference.toggle();
-            }
-        });
-
         final RecyclerView list = container.findViewById(android.R.id.list);
         final ChooserAdapter adapter = new ChooserAdapter(getContext(), new ChooserAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final ComponentName component) {
-                optionallyStorePreferredApp(uri, component);
                 startActivity(uri, component);
             }
         }, browsers);
@@ -170,12 +138,5 @@ public class ChooserFragment extends AppCompatDialogFragment {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
-    }
-
-    private void optionallyStorePreferredApp(final Uri uri, final ComponentName component) {
-        if (mRememberPreference.isChecked()) {
-            final PreferredAppsStore store = new PreferredAppsStore(getContext());
-            store.put(uri, component);
-        }
     }
 }

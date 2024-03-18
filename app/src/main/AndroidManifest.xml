@@ -13,16 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SettingsActivity"
-            android:exported="true"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".ChooserActivity"
             android:exported="true"
             android:theme="@style/Theme.Transparent">
@@ -32,6 +22,8 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
 
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -53,12 +45,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ChooserFullscreenActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PreferredAppsActivity"
-            android:exported="false" />
     </application>
 
     <queries>
