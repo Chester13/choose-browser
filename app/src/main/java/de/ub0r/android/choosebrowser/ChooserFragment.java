@@ -1,7 +1,10 @@
 package de.ub0r.android.choosebrowser;
 
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -119,7 +123,15 @@ public class ChooserFragment extends AppCompatDialogFragment {
         final ChooserAdapter adapter = new ChooserAdapter(getContext(), new ChooserAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(final ComponentName component) {
-                startActivity(uri, component);
+                if (component.getPackageName().equals(getString(R.string.copy_link))) {
+                    ClipboardManager clipboard = (ClipboardManager)getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("label", uri.toString());
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(getContext(), R.string.link_copied, Toast.LENGTH_LONG).show();
+                    finish();
+                } else {
+                    startActivity(uri, component);
+                }
             }
         }, browsers);
         list.setAdapter(adapter);

@@ -4,6 +4,8 @@
     <string name="chooser_item_logo">Logo of displayed app</string>
     <string name="error_app_not_found">Error starting preferred app</string>
     <string name="empty_link">Link is empty</string>
+    <string name="copy_link">Copy Link</string>
+    <string name="link_copied">Link copied</string>
 
     <string name="settings">Settings</string>
 </resources>

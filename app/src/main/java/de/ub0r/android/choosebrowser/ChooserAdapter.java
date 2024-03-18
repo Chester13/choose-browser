@@ -1,5 +1,6 @@
 package de.ub0r.android.choosebrowser;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -37,30 +38,38 @@ public class ChooserAdapter extends RecyclerView.Adapter<ChooserAdapter.ViewHold
     }
 
     static class ContentHolder {
+        private final Context mContext;
         private final ResolveInfo mBrowser;
         private CharSequence mLabel;
         private Drawable mIcon;
 
-        ContentHolder(final ResolveInfo browser) {
+        ContentHolder(final Context context, final ResolveInfo browser) {
+            mContext = context;
             mBrowser = browser;
         }
 
         CharSequence getLabel(final PackageManager pm) {
-            if (mLabel == null) {
+            if (mLabel == null && mBrowser != null) {
                 mLabel = mBrowser.loadLabel(pm);
             }
             return mLabel;
         }
 
         Drawable getIcon(final PackageManager pm) {
-            if (mIcon == null) {
+            if (mIcon == null && mBrowser != null) {
                 mIcon = mBrowser.loadIcon(pm);
             }
             return mIcon;
         }
 
         ComponentName getComponent() {
-            return new ComponentName(mBrowser.activityInfo.packageName, mBrowser.activityInfo.name);
+            if (mBrowser == null) {
+                // Special case for add "Copy Link" button in browser list.
+                String copyLink = mContext.getString(R.string.copy_link);
+                return new ComponentName(copyLink, copyLink);
+            } else{
+                return new ComponentName(mBrowser.activityInfo.packageName, mBrowser.activityInfo.name);
+            }
         }
     }
 
@@ -69,15 +78,23 @@ public class ChooserAdapter extends RecyclerView.Adapter<ChooserAdapter.ViewHold
     private final OnItemClickListener mListener;
     private final List<ContentHolder> mItems;
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     ChooserAdapter(final Context context, final OnItemClickListener listener, final List<ResolveInfo> browsers) {
         mInflater = LayoutInflater.from(context);
         mPackageManager = context.getPackageManager();
         mListener = listener;
         mItems = new ArrayList<>();
+
+        // Special case for add "Copy Link" button in browser list.
+        ContentHolder ch = new ContentHolder(context, null);
+        ch.mIcon = context.getDrawable(android.R.drawable.ic_menu_edit);
+        ch.mLabel = context.getString(R.string.copy_link);
+        mItems.add(ch);
+
         final String myPackageName = context.getPackageName();
         for (ResolveInfo browser : browsers) {
             if (!myPackageName.equals(browser.activityInfo.packageName)) {
-                mItems.add(new ContentHolder(browser));
+                mItems.add(new ContentHolder(context, browser));
             }
         }
     }
