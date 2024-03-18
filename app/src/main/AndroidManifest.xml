@@ -15,6 +15,7 @@
         <activity
             android:name=".ChooserActivity"
             android:exported="true"
+            android:excludeFromRecents="true"
             android:theme="@style/Theme.Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
