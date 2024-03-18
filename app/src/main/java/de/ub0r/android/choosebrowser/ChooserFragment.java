@@ -52,7 +52,7 @@ public class ChooserFragment extends AppCompatDialogFragment {
         setHasOptionsMenu(true);
 
         if (getArguments().getBoolean(EXTRA_SHOW_AS_DIALOG)) {
-            setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_AppCompat_Light_Dialog);
+            setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog);
         }
     }
 
@@ -86,37 +86,37 @@ public class ChooserFragment extends AppCompatDialogFragment {
         }
     }
 
-    private void setTitle(@StringRes final int title) {
-        final FragmentActivity activity = getActivity();
-        if (activity != null) {
-            activity.setTitle(title);
-        }
-        final Dialog dialog = getDialog();
-        if (dialog != null) {
-            dialog.setTitle(title);
-        }
-    }
-
-    private void setSubtitle(final String subtitle) {
-        final FragmentActivity activity = getActivity();
-        if (activity != null) {
-            final AppCompatActivity compatActivity = (AppCompatActivity) activity;
-            if (compatActivity.getSupportActionBar() != null) {
-                compatActivity.getSupportActionBar().setSubtitle(subtitle);
-            }
-        }
-        final Dialog dialog = getDialog();
-        if (dialog != null) {
-            dialog.setTitle(String.format("%s - %s", getString(R.string.app_name), subtitle));
-        }
-    }
+//    private void setTitle(@StringRes final int title) {
+//        final FragmentActivity activity = getActivity();
+//        if (activity != null) {
+//            activity.setTitle(title);
+//        }
+//        final Dialog dialog = getDialog();
+//        if (dialog != null) {
+//            dialog.setTitle(title);
+//        }
+//    }
+//
+//    private void setSubtitle(final String subtitle) {
+//        final FragmentActivity activity = getActivity();
+//        if (activity != null) {
+//            final AppCompatActivity compatActivity = (AppCompatActivity) activity;
+//            if (compatActivity.getSupportActionBar() != null) {
+//                compatActivity.getSupportActionBar().setSubtitle(subtitle);
+//            }
+//        }
+//        final Dialog dialog = getDialog();
+//        if (dialog != null) {
+//            dialog.setTitle(String.format("%s - %s", getString(R.string.app_name), subtitle));
+//        }
+//    }
 
     private void showChooser(final View container) {
         final Uri uri = Uri.parse(getArguments().getString(EXTRA_URI));
         Log.d(TAG, "showChooser for uri ", uri);
 
-        setTitle(R.string.app_name);
-        setSubtitle(uri.toString());
+        //setTitle(R.string.app_name);
+        //setSubtitle(uri.toString());
 
         final List<ResolveInfo> browsers = listBrowsers(uri);
         final RecyclerView list = container.findViewById(android.R.id.list);
