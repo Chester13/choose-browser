@@ -87,7 +87,7 @@ public class ChooserAdapter extends RecyclerView.Adapter<ChooserAdapter.ViewHold
 
         // Special case for add "Copy Link" button in browser list.
         ContentHolder ch = new ContentHolder(context, null);
-        ch.mIcon = context.getDrawable(android.R.drawable.ic_menu_edit);
+        ch.mIcon = context.getDrawable(android.R.drawable.ic_menu_share);
         ch.mLabel = context.getString(R.string.copy_link);
         mItems.add(ch);
 
