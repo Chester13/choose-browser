@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/activity_margin"
     android:orientation="vertical"
+    android:background="#BFBFBF"
     tools:context="de.ub0r.android.choosebrowser.ChooserActivity">
 
     <androidx.recyclerview.widget.RecyclerView

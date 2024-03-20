@@ -1,6 +1,5 @@
 package de.ub0r.android.choosebrowser;
 
-import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ComponentName;
@@ -13,11 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,11 +22,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 import java.util.List;
 
 import de.ub0r.android.logg0r.Log;
 
-public class ChooserFragment extends AppCompatDialogFragment {
+public class ChooserFragment extends BottomSheetDialogFragment {
 
     private static final String TAG = "ChooserFragment";
     private static final String EXTRA_URI = "uri";
@@ -52,7 +49,7 @@ public class ChooserFragment extends AppCompatDialogFragment {
         setHasOptionsMenu(true);
 
         if (getArguments().getBoolean(EXTRA_SHOW_AS_DIALOG)) {
-            setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog);
+            //setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog);
         }
     }
 
