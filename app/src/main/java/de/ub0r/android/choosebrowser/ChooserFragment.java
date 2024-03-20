@@ -32,25 +32,13 @@ public class ChooserFragment extends BottomSheetDialogFragment {
 
     private static final String TAG = "ChooserFragment";
     private static final String EXTRA_URI = "uri";
-    private static final String EXTRA_SHOW_AS_DIALOG = "showAsDialog";
 
-    static ChooserFragment newInstance(@NonNull final Uri uri, final boolean showAsDialog) {
+    static ChooserFragment newInstance(@NonNull final Uri uri) {
         ChooserFragment f = new ChooserFragment();
         Bundle args = new Bundle();
         args.putString(EXTRA_URI, uri.toString());
-        args.putBoolean(EXTRA_SHOW_AS_DIALOG, showAsDialog);
         f.setArguments(args);
         return f;
-    }
-
-    @Override
-    public void onCreate(final @Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
-        if (getArguments().getBoolean(EXTRA_SHOW_AS_DIALOG)) {
-            //setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_AppCompat_Light_Dialog);
-        }
     }
 
     @Nullable

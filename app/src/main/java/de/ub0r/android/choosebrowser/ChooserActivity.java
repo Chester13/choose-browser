@@ -29,6 +29,6 @@ public class ChooserActivity extends AppCompatActivity {
     }
 
     private void showChooserAsDialog(@NonNull final Uri uri) {
-        ChooserFragment.newInstance(uri, true).show(getSupportFragmentManager(), "dialog");
+        ChooserFragment.newInstance(uri).show(getSupportFragmentManager(), "dialog");
     }
 }
