@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.List;
@@ -108,6 +109,12 @@ public class ChooserFragment extends BottomSheetDialogFragment {
 
         //setTitle(R.string.app_name);
         //setSubtitle(uri.toString());
+
+        BottomSheetDialog dialog = (BottomSheetDialog)getDialog();
+        if (null != dialog) {
+            dialog.setDismissWithAnimation(true);
+            dialog.setCanceledOnTouchOutside(true);
+        }
 
         final List<ResolveInfo> browsers = listBrowsers(uri);
         final RecyclerView list = container.findViewById(android.R.id.list);
