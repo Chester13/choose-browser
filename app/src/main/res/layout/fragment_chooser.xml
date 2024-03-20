@@ -3,14 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:padding="@dimen/activity_margin"
     android:orientation="vertical"
-    android:background="#BFBFBF"
     tools:context="de.ub0r.android.choosebrowser.ChooserActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@android:id/list"
+        android:background="@drawable/shape"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="-2dp"
+        android:paddingBottom="2dp"
         android:layout_height="0dip"
         android:layout_weight="1" />
 

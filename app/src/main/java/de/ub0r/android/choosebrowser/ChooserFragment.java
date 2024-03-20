@@ -48,6 +48,12 @@ public class ChooserFragment extends BottomSheetDialogFragment {
     }
 
     @Override
+    public void onCreate(final @Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.Theme_Transparent);
+    }
+
+    @Override
     public void onViewCreated(final View container, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(container, savedInstanceState);
         showChooser(container);

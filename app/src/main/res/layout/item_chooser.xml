@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/item_height"
+    android:paddingStart="20dp"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
@@ -16,11 +17,14 @@
 
     <TextView
         android:id="@+id/activity_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/activity_icon"
         android:clickable="false"
+        android:paddingEnd="10sp"
+        android:typeface="sans"
+        android:textColor="#FFFFFF"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
 </RelativeLayout>
