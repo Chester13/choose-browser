@@ -25,7 +25,10 @@ import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.ub0r.android.logg0r.Log;
 
@@ -78,37 +81,9 @@ public class ChooserFragment extends BottomSheetDialogFragment {
         }
     }
 
-//    private void setTitle(@StringRes final int title) {
-//        final FragmentActivity activity = getActivity();
-//        if (activity != null) {
-//            activity.setTitle(title);
-//        }
-//        final Dialog dialog = getDialog();
-//        if (dialog != null) {
-//            dialog.setTitle(title);
-//        }
-//    }
-//
-//    private void setSubtitle(final String subtitle) {
-//        final FragmentActivity activity = getActivity();
-//        if (activity != null) {
-//            final AppCompatActivity compatActivity = (AppCompatActivity) activity;
-//            if (compatActivity.getSupportActionBar() != null) {
-//                compatActivity.getSupportActionBar().setSubtitle(subtitle);
-//            }
-//        }
-//        final Dialog dialog = getDialog();
-//        if (dialog != null) {
-//            dialog.setTitle(String.format("%s - %s", getString(R.string.app_name), subtitle));
-//        }
-//    }
-
     private void showChooser(final View container) {
         final Uri uri = Uri.parse(getArguments().getString(EXTRA_URI));
         Log.d(TAG, "showChooser for uri ", uri);
-
-        //setTitle(R.string.app_name);
-        //setSubtitle(uri.toString());
 
         BottomSheetDialog dialog = (BottomSheetDialog)getDialog();
         if (null != dialog) {
@@ -116,7 +91,7 @@ public class ChooserFragment extends BottomSheetDialogFragment {
             dialog.setCanceledOnTouchOutside(true);
         }
 
-        final List<ResolveInfo> browsers = listBrowsers(uri);
+        final List<BrowserInfo> browsers = getSortedFilteredBrowsers(uri);
         final RecyclerView list = container.findViewById(android.R.id.list);
         final ChooserAdapter adapter = new ChooserAdapter(getContext(), new ChooserAdapter.OnItemClickListener() {
             @Override
@@ -131,9 +106,68 @@ public class ChooserFragment extends BottomSheetDialogFragment {
                     startActivity(uri, component);
                 }
             }
-        }, browsers);
+        }, browsers, true);
         list.setAdapter(adapter);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    /**
+     * Get browsers sorted and filtered according to user preferences.
+     */
+    private List<BrowserInfo> getSortedFilteredBrowsers(Uri uri) {
+        PreferencesManager prefs = new PreferencesManager(requireContext());
+        BrowserDiscovery discovery = new BrowserDiscovery(requireContext());
+
+        if (prefs.isCustomSortMode()) {
+            return getCustomSortedBrowsers(prefs, discovery);
+        } else {
+            return getDefaultSortedBrowsers(uri, prefs, discovery);
+        }
+    }
+
+    /**
+     * Get browsers in default sort order with hidden browsers filtered out.
+     */
+    private List<BrowserInfo> getDefaultSortedBrowsers(Uri uri, PreferencesManager prefs, BrowserDiscovery discovery) {
+        List<BrowserInfo> browsers = discovery.discoverBrowsersForUri(uri);
+        Set<String> hidden = prefs.getHiddenBrowsers();
+        return BrowserDiscovery.filterHiddenBrowsers(browsers, hidden);
+    }
+
+    /**
+     * Get browsers in custom sort order.
+     * Only returns the "selected" browsers from custom sort.
+     */
+    private List<BrowserInfo> getCustomSortedBrowsers(PreferencesManager prefs, BrowserDiscovery discovery) {
+        List<BrowserInfo> selected = prefs.getCustomSortSelectedBrowsers();
+
+        // Check if custom sort list is empty
+        if (selected.isEmpty()) {
+            // Auto switch to default sort
+            prefs.setSortMode(PreferencesManager.SORT_MODE_DEFAULT);
+            return discovery.discoverAllBrowsers();
+        }
+
+        // Detect new browsers and add to the end
+        Set<String> knownKeys = prefs.getKnownBrowsers();
+        List<BrowserInfo> newBrowsers = discovery.detectNewBrowsers(knownKeys);
+        if (!newBrowsers.isEmpty()) {
+            prefs.appendToCustomSortSelected(newBrowsers);
+            prefs.addKnownBrowsers(newBrowsers);
+            selected.addAll(newBrowsers);
+        }
+
+        // Filter out uninstalled browsers and load icons
+        List<BrowserInfo> installed = new ArrayList<>();
+        PackageManager pm = requireContext().getPackageManager();
+        for (BrowserInfo browser : selected) {
+            if (discovery.isBrowserInstalled(browser)) {
+                browser.loadDetails(pm);
+                installed.add(browser);
+            }
+        }
+
+        return installed;
     }
 
     private List<ResolveInfo> listBrowsers(Uri uri) {

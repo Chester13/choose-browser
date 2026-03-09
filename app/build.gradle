@@ -10,12 +10,16 @@ File releaseProps = new File("release.properties")
 
 android {
     compileSdkVersion 31
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
     defaultConfig {
         applicationId "de.ub0r.android.choosebrowser"
         minSdkVersion 23
         targetSdkVersion 31
-        versionCode 230013000
-        versionName "1.3"
+        versionCode 230020000
+        versionName "2.0"
     }
     signingConfigs {
         release {
@@ -25,7 +29,7 @@ android {
 
                 storeFile file("../release.ks")
                 storePassword props.getProperty("releaseKeystorePassword")
-                keyAlias "jarsign"
+                keyAlias "release"
                 keyPassword props.getProperty("releaseKeyPassword")
             }
         }
@@ -56,4 +60,5 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation 'com.google.android.material:material:1.6.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
 }

@@ -40,34 +40,52 @@ public class ChooserAdapter extends RecyclerView.Adapter<ChooserAdapter.ViewHold
     static class ContentHolder {
         private final Context mContext;
         private final ResolveInfo mBrowser;
+        private final BrowserInfo mBrowserInfo;
         private CharSequence mLabel;
         private Drawable mIcon;
 
         ContentHolder(final Context context, final ResolveInfo browser) {
             mContext = context;
             mBrowser = browser;
+            mBrowserInfo = null;
+        }
+
+        ContentHolder(final Context context, final BrowserInfo browserInfo) {
+            mContext = context;
+            mBrowser = null;
+            mBrowserInfo = browserInfo;
         }
 
         CharSequence getLabel(final PackageManager pm) {
-            if (mLabel == null && mBrowser != null) {
-                mLabel = mBrowser.loadLabel(pm);
+            if (mLabel == null) {
+                if (mBrowserInfo != null) {
+                    mLabel = mBrowserInfo.getLabel();
+                } else if (mBrowser != null) {
+                    mLabel = mBrowser.loadLabel(pm);
+                }
             }
             return mLabel;
         }
 
         Drawable getIcon(final PackageManager pm) {
-            if (mIcon == null && mBrowser != null) {
-                mIcon = mBrowser.loadIcon(pm);
+            if (mIcon == null) {
+                if (mBrowserInfo != null) {
+                    mIcon = mBrowserInfo.getIcon();
+                } else if (mBrowser != null) {
+                    mIcon = mBrowser.loadIcon(pm);
+                }
             }
             return mIcon;
         }
 
         ComponentName getComponent() {
-            if (mBrowser == null) {
+            if (mBrowserInfo != null) {
+                return new ComponentName(mBrowserInfo.getPackageName(), mBrowserInfo.getActivityName());
+            } else if (mBrowser == null) {
                 // Special case for add "Copy Link" button in browser list.
                 String copyLink = mContext.getString(R.string.copy_link);
                 return new ComponentName(copyLink, copyLink);
-            } else{
+            } else {
                 return new ComponentName(mBrowser.activityInfo.packageName, mBrowser.activityInfo.name);
             }
         }
@@ -86,7 +104,7 @@ public class ChooserAdapter extends RecyclerView.Adapter<ChooserAdapter.ViewHold
         mItems = new ArrayList<>();
 
         // Special case for add "Copy Link" button in browser list.
-        ContentHolder ch = new ContentHolder(context, null);
+        ContentHolder ch = new ContentHolder(context, (ResolveInfo) null);
         ch.mIcon = context.getDrawable(android.R.drawable.ic_menu_share);
         ch.mLabel = context.getString(R.string.copy_link);
         mItems.add(ch);
@@ -96,6 +114,27 @@ public class ChooserAdapter extends RecyclerView.Adapter<ChooserAdapter.ViewHold
             if (!myPackageName.equals(browser.activityInfo.packageName)) {
                 mItems.add(new ContentHolder(context, browser));
             }
+        }
+    }
+
+    /**
+     * Constructor that accepts pre-sorted/filtered BrowserInfo list.
+     */
+    @SuppressLint("UseCompatLoadingForDrawables")
+    ChooserAdapter(final Context context, final OnItemClickListener listener, final List<BrowserInfo> browsers, boolean useBrowserInfo) {
+        mInflater = LayoutInflater.from(context);
+        mPackageManager = context.getPackageManager();
+        mListener = listener;
+        mItems = new ArrayList<>();
+
+        // Special case for add "Copy Link" button in browser list.
+        ContentHolder ch = new ContentHolder(context, (ResolveInfo) null);
+        ch.mIcon = context.getDrawable(android.R.drawable.ic_menu_share);
+        ch.mLabel = context.getString(R.string.copy_link);
+        mItems.add(ch);
+
+        for (BrowserInfo browser : browsers) {
+            mItems.add(new ContentHolder(context, browser));
         }
     }
 

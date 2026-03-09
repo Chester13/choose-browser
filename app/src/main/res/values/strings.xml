@@ -8,4 +8,20 @@
     <string name="link_copied">Link copied</string>
 
     <string name="settings">Settings</string>
+
+    <!-- Settings screen -->
+    <string name="default_sort">Default Sort</string>
+    <string name="default_sort_description">Browsers are sorted by system default order</string>
+    <string name="custom_sort">Custom Sort</string>
+    <string name="custom_sort_description">Manually arrange your browser order</string>
+    <string name="hidden_list">Hidden List</string>
+    <string name="hidden_browsers">Hidden Browsers</string>
+    <string name="hidden_browsers_empty">No browsers available</string>
+
+    <!-- Custom sort screen -->
+    <string name="selected_browsers">Selected Browsers</string>
+    <string name="excluded_browsers">Excluded (Won\'t Show)</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="custom_sort_empty_warning">At least one browser must be selected</string>
 </resources>
